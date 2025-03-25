@@ -11,6 +11,10 @@ const View = () => {
 
   const [filter, setFilter] = useState("");
 
+  const [perPage,setPerPage]=useState(3);
+  const [currentPage,setCurrentPage]=useState(1);
+  const [totalpages,setTotalPages]=useState(0);
+
   const onDelete = (e, id) => {
     e.preventDefault();
     setAllEmp(allEmp.filter((emp) => emp.id !== id));
@@ -28,10 +32,23 @@ const View = () => {
     setAllEmp(newEmp);
   }
 
+  useEffect(()=>{
+    let lastIndex = perPage * currentPage;
+    let firstIndex = lastIndex-perPage;
 
-  useEffect(() => {
-    localStorage.setItem("emp", JSON.stringify(allEmp));
-  }, [allEmp])
+    let newEmp = localStorage.getItem("emp");
+    newEmp = newEmp ? JSON.parse(newEmp) : [];
+    let pages = Math.ceil(newEmp.length/perPage);
+    setTotalPages(pages);
+    newEmp=newEmp.slice(firstIndex,lastIndex);
+    setAllEmp(newEmp);
+
+
+
+  },[currentPage])
+
+
+ 
 
   return (
     <div className="container">
@@ -39,8 +56,8 @@ const View = () => {
       <table>
         <thead>
           <tr>
-            <td> <input type="text" onChange={(e) => (setFilter(e.target.value))} /></td>
-            <td><select name="sorting" onChange={(e)=>{onSortChange(e)}}>
+            <td > <input type="text" onChange={(e) => (setFilter(e.target.value))} /></td>
+            <td colSpan={6}><select name="sorting" onChange={(e)=>{onSortChange(e)}}>
               <option value="">--select sort --</option>
               <option value="asc">Acending</option>
               <option value="desc">Decending</option>
@@ -81,6 +98,15 @@ const View = () => {
 
         </tbody>
       </table>
+      <div class="pagination">
+            <button id="prevPage" onClick={()=>{if(currentPage!=1){
+              setCurrentPage(currentPage-1);
+            }}}>Previous</button>
+            <span id="pageNumber">Page {currentPage}</span>
+            <button id="nextPage"  onClick={()=>{if(currentPage!=totalpages){
+              setCurrentPage(currentPage+1);
+            }}}>Next</button>
+        </div>
     </div>
   )
 }

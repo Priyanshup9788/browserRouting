@@ -56,3 +56,24 @@ th, td {
 th {
   background: #f4f4f4;
 }
+
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+}
+.pagination button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+.pagination button:disabled {
+  background: #ccc;
+}
+#pageNumber {
+  display: inline-block;
+  margin: 0 10px;
+  font-weight: bold;
+}
