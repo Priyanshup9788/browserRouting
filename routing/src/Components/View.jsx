@@ -15,12 +15,20 @@ const View = () => {
   const [currentPage,setCurrentPage]=useState(1);
   const [totalpages,setTotalPages]=useState(0);
 
+  const [virtualEmp,setVirtualEmp]=useState([]);
+
   const onDelete = (e, id) => {
     e.preventDefault();
-    setAllEmp(allEmp.filter((emp) => emp.id !== id));
+    let oldEmp=JSON.parse(localStorage.getItem("emp"));
+    oldEmp=oldEmp.filter((emp)=>emp.id!= id);
+    
+    setAllEmp(oldEmp);
+    localStorage.setItem("emp",JSON.stringify(oldEmp))
   }
 
   const onSortChange=(e)=>{
+    e.preventDefault();
+    
     let newEmp = [...allEmp];
     if(e.target.value=="asc")
     {
@@ -36,16 +44,12 @@ const View = () => {
     let lastIndex = perPage * currentPage;
     let firstIndex = lastIndex-perPage;
 
-    let newEmp = localStorage.getItem("emp");
-    newEmp = newEmp ? JSON.parse(newEmp) : [];
+    let newEmp = [...allEmp];
     let pages = Math.ceil(newEmp.length/perPage);
     setTotalPages(pages);
     newEmp=newEmp.slice(firstIndex,lastIndex);
-    setAllEmp(newEmp);
-
-
-
-  },[currentPage])
+    setVirtualEmp(newEmp);
+  },[currentPage,allEmp])
 
 
  
@@ -75,7 +79,7 @@ const View = () => {
         </thead>
 
         <tbody>
-          {allEmp.filter((emp) => {
+          {virtualEmp.filter((emp) => {
             if (filter != "") {
               if (emp.name.includes(filter)) {
                 return emp;
