@@ -39,21 +39,19 @@ const View = () => {
   }
 
   const onFilterChange = (e) => {
-    let newdata = allEmp.filter((emp) => {
-      if (e.target.value != "") {
-        if (emp.name.toLowerCase().includes(e.target.value.toLowerCase())) {
-          return emp;
-        }
-      }
-    });
-    if (e.target.value == "") {
-      setAllEmp(() => {
-        let epmloyes = localStorage.getItem("emp");
+    let newdata = localStorage.getItem("emp");
+    newdata = newdata ? JSON.parse(newdata) : [];
 
-        return epmloyes ? JSON.parse(epmloyes) : [];
+    if (e.target.value != "") {
+      newdata = newdata.filter((emp) => {
+        if (e.target.value != "") {
+          if (emp.name.toLowerCase().includes(e.target.value.toLowerCase())) {
+            return emp;
+          }
+        }
       });
-      return;
     }
+
     setAllEmp(newdata);
   }
 
@@ -67,6 +65,10 @@ const View = () => {
     else if (e.target.value == "desc") {
       newEmp.sort((a, b) => (b.name.localeCompare(a.name)));
     }
+    else if(e.target.value == "reset")
+    {
+      newEmp.sort((a, b) => (a.id-b.id));
+    }
     setAllEmp(newEmp);
   }
 
@@ -75,7 +77,7 @@ const View = () => {
 
 
   return (
-    <div className="container">
+    <div className="container" style={{width:"70%"}}>
       <h2>Submitted Data</h2>
       <table>
         <thead>
@@ -85,6 +87,7 @@ const View = () => {
               <option value="">--select sort --</option>
               <option value="asc">Acending</option>
               <option value="desc">Decending</option>
+              <option value="reset">Reset</option>
             </select></td>
           </tr>
           <tr>
